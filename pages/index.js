@@ -28,8 +28,8 @@ const services = [
     ),
   },
   {
-    title: "Training",
-    desc: "Preparing candidates with practical skills and professional development.",
+    title: "Talent Consulting",
+    desc: "Providing workforce insights, hiring strategies, market intelligence, and talent solutions to help organizations build stronger teams.",
     icon: (
       <svg viewBox="0 0 24 24" className="w-7 h-7" fill="white">
         <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />

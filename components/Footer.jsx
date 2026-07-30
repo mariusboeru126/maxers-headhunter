@@ -76,7 +76,6 @@ export default function Footer() {
             <li>Recruitment</li>
             <li>Career Support</li>
             <li>Training &amp; Development</li>
-            <li>Resume Assistance</li>
             <li>Global Opportunities</li>
           </ul>
         </div>

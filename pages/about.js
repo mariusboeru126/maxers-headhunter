@@ -73,15 +73,15 @@ const mvv = [
 const whatWeDoItems = [
   "Understand your needs and career goals",
   "Find and assess the right talent",
-  "Provide training and skill development",
+  "Providing workforce insights, hiring strategies, market intelligence, and talent solutions",
   "Support candidates through every hiring stage",
   "Build long-term partnerships with employers",
 ];
 
 const trainingModes = [
   {
-    title: "Training in Zoom",
-    image: "/images/home_1.png",
+    title: "Talent Solutions",
+    image: "/images/training_zoom.png",
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8">
         <rect x="2" y="5" width="14" height="10" rx="2" />
@@ -90,8 +90,8 @@ const trainingModes = [
     ),
   },
   {
-    title: "Classroom Training",
-    image: "/images/home_2.png",
+    title: "Strategic Consulting",
+    image: "/images/classroom.png",
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8">
         <rect x="3" y="4" width="18" height="12" rx="1" />
@@ -100,8 +100,8 @@ const trainingModes = [
     ),
   },
   {
-    title: "Online Learning",
-    image: "/images/team.jpg",
+    title: "Career Development",
+    image: "/images/learning_online.png",
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8">
         <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
@@ -292,11 +292,10 @@ export default function About() {
             <div>
               <p className="section-label">What We Do</p>
               <h2 className="text-[28px] lg:text-[32px] font-bold text-[#0B1F3A] leading-tight mb-5">
-                We Create, Train and Connect People
+                Talent Consulting
               </h2>
               <p className="text-[14px] leading-relaxed text-slate-500 mb-8">
-                From sourcing talent to preparing candidates for success, we provide
-                end-to-end workforce solutions that help people and businesses thrive.
+                Providing workforce insights, hiring strategies, market intelligence, and talent solutions to help organizations build stronger teams.
               </p>
               <ul className="space-y-4">
                 {whatWeDoItems.map((item) => (
@@ -314,7 +313,7 @@ export default function About() {
 
             <div>
               <img
-                src="/images/team.jpg"
+                src="/images/train.png"
                 alt="Training and development session"
                 className="w-full h-[280px] lg:h-[360px] object-cover rounded-lg shadow-card"
               />
@@ -410,9 +409,9 @@ export default function About() {
         <div className="bg-[#0B1F3A] max-w-[1280px] mx-auto grid lg:grid-cols-2 rounded-lg">
           <div className="relative min-h-[320px] lg:min-h-[420px]">
             <img
-              src="/images/home_3.png"
+              src="/images/culture.png"
               alt="Team celebrating together"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover rounded-lg"
             />
           </div>
           <div className="px-6 lg:px-14 py-14 lg:py-20 flex flex-col justify-center">

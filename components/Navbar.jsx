@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -13,6 +13,8 @@ function ArrowIcon() {
 export default function Navbar() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+  const avatarMenuRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -20,6 +22,17 @@ export default function Navbar() {
       .then((data) => setUser(data.user))
       .catch(() => setUser(null));
   }, [router.pathname, router.isReady]);
+
+  useEffect(() => {
+    function onDocumentClick(event) {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(event.target)) {
+        setShowAvatarMenu(false);
+      }
+    }
+
+    document.addEventListener("mousedown", onDocumentClick);
+    return () => document.removeEventListener("mousedown", onDocumentClick);
+  }, []);
 
   const links = [
     { href: "/", label: "Home" },
@@ -75,13 +88,6 @@ export default function Navbar() {
               <span className="hidden xl:inline text-xs text-slate-500 font-medium">
                 Hi, {user.fullName?.split(" ")[0]}
               </span>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="hidden sm:inline text-xs font-semibold text-slate-500 hover:text-brand"
-              >
-                Log out
-              </button>
             </>
           ) : (
             <Link
@@ -91,6 +97,7 @@ export default function Navbar() {
               Login
             </Link>
           )}
+
           <Link
             href="/jobs"
             className="bg-brand hover:bg-[#003d94] text-white text-[13px] font-semibold px-6 py-2.5 rounded transition-colors inline-flex items-center gap-2"
@@ -101,6 +108,34 @@ export default function Navbar() {
               <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
             </svg>
           </Link>
+
+          {user && (
+            <div className="relative" ref={avatarMenuRef}>
+              <button
+                type="button"
+                onClick={() => setShowAvatarMenu((open) => !open)}
+                className="w-10 h-10 rounded-full bg-slate-900 text-white font-semibold text-sm flex items-center justify-center border border-slate-200 hover:bg-slate-800 transition"
+                aria-label="Open account menu"
+              >
+                {user.fullName?.trim().charAt(0).toUpperCase() || "U"}
+              </button>
+
+              {showAvatarMenu && (
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 rounded-xl shadow-lg text-left z-10">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShowAvatarMenu(false);
+                      await handleLogout();
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>
