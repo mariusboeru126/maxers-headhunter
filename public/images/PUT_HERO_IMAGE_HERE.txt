@@ -1,0 +1,3 @@
+Place your hero background image here as: hero.jpg
+(An Asian software developer photo, landscape orientation, 1600px+ wide works best.)
+The homepage at pages/index.js already references /images/hero.jpg
