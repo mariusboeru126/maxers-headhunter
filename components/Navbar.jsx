@@ -19,7 +19,7 @@ export default function Navbar() {
       .then((r) => r.json())
       .then((data) => setUser(data.user))
       .catch(() => setUser(null));
-  }, [router.pathname]);
+  }, [router.pathname, router.isReady]);
 
   const links = [
     { href: "/", label: "Home" },
@@ -76,6 +76,7 @@ export default function Navbar() {
                 Hi, {user.fullName?.split(" ")[0]}
               </span>
               <button
+                type="button"
                 onClick={handleLogout}
                 className="hidden sm:inline text-xs font-semibold text-slate-500 hover:text-brand"
               >
@@ -85,9 +86,9 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="hidden sm:inline text-xs font-semibold text-slate-500 hover:text-brand"
+              className="inline-flex items-center justify-center border border-brand text-brand hover:bg-brand/5 text-[13px] font-semibold px-5 py-2.5 rounded transition-colors"
             >
-              Log in
+              Login
             </Link>
           )}
           <Link
@@ -95,6 +96,10 @@ export default function Navbar() {
             className="bg-brand hover:bg-[#003d94] text-white text-[13px] font-semibold px-6 py-2.5 rounded transition-colors inline-flex items-center gap-2"
           >
             Apply Now
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
           </Link>
         </div>
       </div>

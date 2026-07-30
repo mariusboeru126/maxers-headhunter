@@ -1,14 +1,14 @@
 import { query } from "../../../lib/db";
 
 export default async function handler(req, res) {
-  const { id } = req.query;
+  const { slug } = req.query;
 
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const rows = await query("SELECT * FROM jobs WHERE id = ?", [id]);
+    const rows = await query("SELECT * FROM jobs WHERE slug = ?", [slug]);
     if (rows.length === 0) {
       return res.status(404).json({ error: "Job not found." });
     }

@@ -1,13 +1,18 @@
 import { query } from "../../../lib/db";
 
-export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+function buildJobsQuery(queryParams, { countOnly = false } = {}) {
+  const {
+    keyword,
+    category,
+    location,
+    jobType,
+    workType,
+    salaryMin,
+    salaryMax,
+    postedWithin,
+  } = queryParams;
 
-  const { keyword, category, location } = req.query;
-
-  let sql = "SELECT * FROM jobs WHERE 1=1";
+  let sql = countOnly ? "SELECT COUNT(*) AS total FROM jobs WHERE 1=1" : "SELECT * FROM jobs WHERE 1=1";
   const params = [];
 
   if (keyword) {
@@ -26,11 +31,54 @@ export default async function handler(req, res) {
     params.push(`%${location}%`);
   }
 
-  sql += " ORDER BY posted_at DESC";
+  if (jobType && jobType !== "All Types") {
+    sql += " AND job_type = ?";
+    params.push(jobType);
+  }
+
+  if (workType && workType !== "All Work Types") {
+    sql += " AND work_type = ?";
+    params.push(workType);
+  }
+
+  const minSal = salaryMin ? parseInt(salaryMin, 10) : null;
+  const maxSal = salaryMax ? parseInt(salaryMax, 10) : null;
+  if (minSal && !Number.isNaN(minSal)) {
+    sql += " AND (salary_max IS NULL OR salary_max >= ?)";
+    params.push(minSal);
+  }
+  if (maxSal && !Number.isNaN(maxSal)) {
+    sql += " AND (salary_min IS NULL OR salary_min <= ?)";
+    params.push(maxSal);
+  }
+
+  const days = postedWithin ? parseInt(postedWithin, 10) : null;
+  if (days && !Number.isNaN(days) && days > 0) {
+    sql += " AND posted_at >= DATE_SUB(NOW(), INTERVAL ? DAY)";
+    params.push(days);
+  }
+
+  if (!countOnly) {
+    sql += " ORDER BY posted_at DESC";
+  }
+
+  return { sql, params };
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
+    const { sql, params } = buildJobsQuery(req.query);
     const jobs = await query(sql, params);
-    return res.status(200).json({ jobs });
+
+    const { sql: countSql, params: countParams } = buildJobsQuery(req.query, { countOnly: true });
+    const countRows = await query(countSql, countParams);
+    const total = countRows[0]?.total ?? jobs.length;
+
+    return res.status(200).json({ jobs, total });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Failed to load jobs." });

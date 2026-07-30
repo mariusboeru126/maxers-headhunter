@@ -1,7 +1,90 @@
-export default function GoogleSignInButton({ href, className = "" }) {
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+
+function loadGoogleScript() {
+  if (typeof window === "undefined") return Promise.resolve();
+  if (window.google?.accounts?.oauth2) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", reject);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
+export default function GoogleSignInButton({ next = "/", className = "", onError }) {
+  const router = useRouter();
+  const clientRef = useRef(null);
+  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+
+  useEffect(() => {
+    if (!clientId) return undefined;
+
+    let cancelled = false;
+
+    loadGoogleScript()
+      .then(() => {
+        if (cancelled || !window.google?.accounts?.oauth2) return;
+        clientRef.current = window.google.accounts.oauth2.initCodeClient({
+          client_id: clientId,
+          scope: "openid email profile",
+          ux_mode: "popup",
+          callback: async (response) => {
+            if (response.error) {
+              onError?.(response.error);
+              return;
+            }
+
+            const res = await fetch("/api/auth/google/exchange", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code: response.code, redirectUri: "postmessage" }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              onError?.(data.error || "Google login failed.");
+              return;
+            }
+            router.push(next);
+          },
+        });
+      })
+      .catch(() => {
+        onError?.("Could not load Google Sign-In.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [clientId, next, onError, router]);
+
+  function handleClick() {
+    if (!clientId) {
+      window.location.href = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
+      return;
+    }
+    if (clientRef.current) {
+      clientRef.current.requestCode();
+      return;
+    }
+    window.location.href = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
+  }
+
   return (
-    <a
-      href={href}
+    <button
+      type="button"
+      onClick={handleClick}
       className={`w-full flex items-center justify-center gap-2 border border-slate-200 rounded-md px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 ${className}`}
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" aria-hidden="true">
@@ -22,7 +105,7 @@ export default function GoogleSignInButton({ href, className = "" }) {
           d="M12 6.04c1.47 0 2.8.5 3.84 1.49l2.88-2.88A9.96 9.96 0 0 0 12 2a10 10 0 0 0-8.93 5.52l3.34 2.58C7.2 7.8 9.4 6.04 12 6.04Z"
         />
       </svg>
-      Continue with Gmail
-    </a>
+      Continue with Google
+    </button>
   );
 }
