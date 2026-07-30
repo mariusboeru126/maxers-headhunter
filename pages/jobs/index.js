@@ -283,7 +283,7 @@ export default function Jobs() {
       <section className="bg-white py-16 lg:py-20 border-t border-slate-100">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <h2 className="text-center text-[22px] font-bold text-[#0B1F3A] mb-12">How to Apply</h2>
-          <div className="hidden lg:flex items-start justify-between">
+          <div className="lg:flex items-start justify-between">
             {applySteps.map((item, i) => (
               <div key={item.step} className="flex items-start flex-1">
                 <div className="flex flex-col items-center text-center flex-1 max-w-[180px]">

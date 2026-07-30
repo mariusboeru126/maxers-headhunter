@@ -115,13 +115,13 @@ const founders = [
   {
     name: "Michael Reyes",
     role: "Co-Founder & CEO",
-    image: "/images/home_1.png",
+    image: "/images/Co-Founder-1.jpg",
     bio: "With over 15 years in global recruitment, Michael built Maxers Head Hunter to bridge the gap between exceptional talent and world-class employers.",
   },
   {
     name: "Sarah Chen",
     role: "Co-Founder & COO",
-    image: "/images/home_2.png",
+    image: "/images/Co-Founder-2.jpg",
     bio: "Sarah leads operations and candidate development programs, ensuring every professional receives personalized support from application to placement.",
   },
 ];
@@ -406,8 +406,8 @@ export default function About() {
       </section>
 
       {/* Our Culture */}
-      <section className="bg-[#0B1F3A]">
-        <div className="max-w-[1280px] mx-auto grid lg:grid-cols-2">
+      <section className="py-20 lg:py-24">
+        <div className="bg-[#0B1F3A] max-w-[1280px] mx-auto grid lg:grid-cols-2 rounded-lg">
           <div className="relative min-h-[320px] lg:min-h-[420px]">
             <img
               src="/images/home_3.png"
