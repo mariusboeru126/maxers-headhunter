@@ -156,7 +156,9 @@ export default function JobsFilterSidebar({
               >
                 {row.category}
               </button>
-              <span className="text-slate-400 font-medium">{row.count}</span>
+              <span className="min-w-[26px] h-[26px] rounded-full bg-blue-50 text-brand text-[11px] font-bold flex items-center justify-center">
+                {row.count}
+              </span>
             </li>
           ))}
         </ul>

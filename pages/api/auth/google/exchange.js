@@ -1,10 +1,9 @@
-import cookie from "cookie";
 import {
   buildAuthSessionCookie,
   fetchGoogleProfileFromCode,
   upsertUserFromGoogleProfile,
-} from "../../../lib/googleUser";
-import { getGoogleConfig } from "../../../lib/googleOAuth";
+} from "../../../../lib/googleUser";
+import { getGoogleConfig } from "../../../../lib/googleOAuth";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
