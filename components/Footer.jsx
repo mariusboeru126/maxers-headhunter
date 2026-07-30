@@ -5,7 +5,7 @@ function SocialIcon({ children, href, label }) {
     <a
       href={href}
       aria-label={label}
-      className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white hover:bg-brand-light transition-colors"
+      className="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white hover:bg-brand-light transition-all hover:-translate-y-1 hover:shadow-lg"
     >
       {children}
     </a>

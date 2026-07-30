@@ -55,8 +55,8 @@ export default function Navbar() {
   return (
     <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-[72px] grid grid-cols-[1fr_auto_1fr] items-center">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-brand text-white flex items-center justify-center font-extrabold text-xl shrink-0">
+        <Link href="/" className="group flex items-center gap-3">
+          <div className="w-10 h-10 rounded bg-brand text-white flex items-center justify-center font-extrabold text-xl shrink-0 transition-transform duration-200 group-hover:rotate-[-4deg] group-hover:scale-105">
             M
           </div>
           <div className="leading-tight">
@@ -70,14 +70,11 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative pb-1 transition-colors hover:text-brand ${
-                isActive(link.href) ? "text-brand" : ""
+            className={`nav-link relative pb-1 transition-colors hover:text-brand ${
+                isActive(link.href) ? "nav-link--active text-brand" : ""
               }`}
             >
               {link.label}
-              {isActive(link.href) && (
-                <span className="absolute left-0 right-0 -bottom-[2px] h-[2px] bg-brand rounded-full" />
-              )}
             </Link>
           ))}
         </nav>
@@ -92,7 +89,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center justify-center border border-brand text-brand hover:bg-brand/5 text-[13px] font-semibold px-5 py-2.5 rounded transition-colors"
+              className="inline-flex items-center justify-center border border-brand text-brand hover:bg-brand/5 text-[13px] font-semibold px-5 py-2.5 rounded transition-all hover:-translate-y-0.5"
             >
               Login
             </Link>
@@ -100,7 +97,7 @@ export default function Navbar() {
 
           <Link
             href="/jobs"
-            className="bg-brand hover:bg-[#003d94] text-white text-[13px] font-semibold px-6 py-2.5 rounded transition-colors inline-flex items-center gap-2"
+            className="bg-brand hover:bg-[#003d94] text-white text-[13px] font-semibold px-6 py-2.5 rounded transition-all hover:-translate-y-0.5 hover:shadow-lg inline-flex items-center gap-2"
           >
             Apply Now
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

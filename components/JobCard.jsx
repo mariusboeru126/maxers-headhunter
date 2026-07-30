@@ -46,7 +46,7 @@ export default function JobCard({ job }) {
   return (
     <Link
       href={href}
-      className="block bg-white border border-slate-200 rounded-md p-5 hover:shadow-md hover:border-brand/30 transition-all"
+      className="motion-card block bg-white border border-slate-200 rounded-md p-5 hover:border-brand/30"
     >
       <div className="flex items-start gap-4">
         <div className={`w-12 h-12 rounded-md ${accent.bg} flex items-center justify-center shrink-0`}>

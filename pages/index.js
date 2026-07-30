@@ -181,17 +181,17 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="relative min-h-[320px] lg:min-h-0">
+        <div className="image-frame relative min-h-[320px] lg:min-h-0">
           <img
             src="/images/home_1.png"
             alt="Professional interview meeting"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            className="motion-image absolute inset-0 w-full h-full object-cover object-center"
           />
         </div>
       </section>
 
       <section className="max-w-[1280px] mx-auto px-6 lg:px-10 py-20 lg:py-24 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div>
+        <div className="image-frame rounded-2xl">
           <p className="section-label">Who We Are</p>
           <h2 className="text-[28px] lg:text-[32px] font-bold text-[#0B1F3A] leading-tight mb-6">
             Your Partner in Building Successful Careers
@@ -215,7 +215,7 @@ export default function Home() {
           <img
             src="/images/home_2.png"
             alt="Team collaborating in a meeting"
-            className="w-full h-[340px] lg:h-[380px] object-cover rounded-2xl shadow-card"
+            className="motion-image w-full h-[340px] lg:h-[380px] object-cover rounded-2xl shadow-card"
           />
         </div>
       </section>
@@ -226,7 +226,7 @@ export default function Home() {
             {services.map((item) => (
               <div
                 key={item.title}
-                className="bg-white border-t-[3px] border-brand rounded-sm shadow-card-sm px-6 pt-8 pb-10 text-center"
+                className="motion-card bg-white border-t-[3px] border-brand rounded-sm shadow-card-sm px-6 pt-8 pb-10 text-center"
               >
                 <div className="w-[72px] h-[72px] rounded-full bg-brand flex items-center justify-center mx-auto mb-6">
                   {item.icon}
@@ -247,7 +247,7 @@ export default function Home() {
           {whyChoose.map((item) => (
             <div
               key={item.title}
-              className="bg-[#F5F7FA] rounded-lg px-6 py-7 flex items-start gap-4"
+                className="motion-card bg-[#F5F7FA] rounded-lg px-6 py-7 flex items-start gap-4"
             >
               {item.icon}
               <div>
@@ -267,7 +267,7 @@ export default function Home() {
           <div className="hidden lg:flex items-start justify-between">
             {processSteps.map((item, i) => (
               <div key={item.step} className="flex items-start flex-1">
-                <div className="flex flex-col items-center text-center flex-1 max-w-[180px]">
+                <div className="motion-card flex flex-col items-center text-center flex-1 max-w-[180px] rounded-lg py-2">
                   <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
                     {item.icon}
                   </div>
@@ -283,7 +283,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:hidden gap-8">
             {processSteps.map((item) => (
-              <div key={item.step} className="flex flex-col items-center text-center">
+              <div key={item.step} className="motion-card flex flex-col items-center text-center rounded-lg py-2">
                 <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center mb-2">
                   {item.icon}
                 </div>
@@ -327,11 +327,11 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative min-h-[220px]">
+          <div className="image-frame relative min-h-[220px]">
             <img
               src="/images/home_3.png"
               alt="Business professionals shaking hands"
-              className="absolute inset-0 w-full h-full object-cover object-center"
+              className="motion-image absolute inset-0 w-full h-full object-cover object-center"
             />
           </div>
         </div>

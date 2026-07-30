@@ -249,7 +249,7 @@ export default function About() {
               {stats.map((item) => (
                 <div
                   key={item.label}
-                  className="bg-white border border-slate-100 rounded-lg shadow-card-sm px-6 py-6 flex items-center gap-4"
+                className="motion-card bg-white border border-slate-100 rounded-lg shadow-card-sm px-6 py-6 flex items-center gap-4"
                 >
                   <div className="w-12 h-12 rounded-full bg-blue-50 text-brand flex items-center justify-center shrink-0">
                     {item.icon}
@@ -271,7 +271,7 @@ export default function About() {
           {mvv.map((item) => (
             <div
               key={item.title}
-              className="bg-white rounded-lg shadow-card-sm border border-slate-100 p-6 flex gap-4"
+                className="motion-card bg-white rounded-lg shadow-card-sm border border-slate-100 p-6 flex gap-4"
             >
               <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center shrink-0">
                 {item.icon}
@@ -323,7 +323,7 @@ export default function About() {
               {trainingModes.map((mode) => (
                 <div
                   key={mode.title}
-                  className="flex items-center gap-4 bg-white border border-slate-100 rounded-lg shadow-card-sm p-3"
+                className="motion-card flex items-center gap-4 bg-white border border-slate-100 rounded-lg shadow-card-sm p-3"
                 >
                   <img
                     src={mode.image}
@@ -362,12 +362,12 @@ export default function About() {
             {founders.map((founder) => (
               <div
                 key={founder.name}
-                className="bg-white rounded-lg border border-slate-100 shadow-card-sm overflow-hidden"
+                className="motion-card image-frame bg-white rounded-lg border border-slate-100 shadow-card-sm overflow-hidden"
               >
                 <img
                   src={founder.image}
                   alt={founder.name}
-                  className="w-full h-[220px] object-cover object-top"
+                  className="motion-image w-full h-[220px] object-cover object-top"
                 />
                 <div className="p-6">
                   <h3 className="font-bold text-[17px] text-[#0B1F3A]">{founder.name}</h3>
@@ -393,7 +393,7 @@ export default function About() {
             {teamPrinciples.map((item) => (
               <div
                 key={item.title}
-                className="bg-white border border-slate-200 rounded-lg p-6 text-center hover:shadow-card-sm transition-shadow"
+                className="motion-card bg-white border border-slate-200 rounded-lg p-6 text-center"
               >
                 <div className="flex justify-center mb-5">{item.icon}</div>
                 <h3 className="font-bold text-[14px] text-[#0B1F3A] mb-2">{item.title}</h3>
