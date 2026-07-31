@@ -1,4 +1,5 @@
 import { query } from "../../../lib/db";
+import { decryptJobLink } from "../../../lib/jobLink";
 
 export default async function handler(req, res) {
   const { slug } = req.query;
@@ -8,7 +9,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const rows = await query("SELECT * FROM jobs WHERE slug = ?", [slug]);
+    const jobId = decryptJobLink(slug);
+    if (!jobId) return res.status(404).json({ error: "Job not found." });
+    const rows = await query(
+      "SELECT j.*, c.name AS category_name FROM jobs j JOIN categories c ON c.id = j.category_id WHERE j.id = ?",
+      [jobId]
+    );
     if (rows.length === 0) {
       return res.status(404).json({ error: "Job not found." });
     }

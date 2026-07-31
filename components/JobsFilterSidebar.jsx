@@ -1,15 +1,5 @@
 import Link from "next/link";
 
-const CATEGORIES = [
-  "All Categories",
-  "IT & Software",
-  "Accounting & Finance",
-  "Human Resources",
-  "Marketing & Sales",
-  "Design & Creative",
-  "Administration",
-];
-
 const JOB_TYPES = ["All Types", "Full-time", "Part-time", "Contract", "Internship"];
 const WORK_TYPES = ["All Work Types", "Onsite", "Hybrid", "Remote"];
 const POSTED_OPTIONS = [
@@ -52,12 +42,13 @@ export default function JobsFilterSidebar({
           <div>
             <label className="block text-[12px] font-semibold text-slate-600 mb-1.5">Category</label>
             <select
-              value={filters.category}
-              onChange={(e) => set("category", e.target.value)}
+              value={filters.categoryId}
+              onChange={(e) => set("categoryId", e.target.value)}
               className="w-full border border-slate-200 rounded px-3 py-2.5 text-[13px] focus:outline-none focus:ring-2 focus:ring-brand/30"
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
+              <option value="">All Categories</option>
+              {categoryCounts.map((category) => (
+                <option key={category.id} value={category.id}>{category.name}</option>
               ))}
             </select>
           </div>
@@ -145,16 +136,16 @@ export default function JobsFilterSidebar({
         <h3 className="font-bold text-[#0B1F3A] text-[15px] mb-4">Job Categories</h3>
         <ul className="space-y-3 text-[13px]">
           {categoryCounts.map((row) => (
-            <li key={row.category} className="flex items-center justify-between text-slate-600">
+            <li key={row.id} className="flex items-center justify-between text-slate-600">
               <button
                 type="button"
                 onClick={() => {
-                  onChange({ ...filters, category: row.category });
-                  onSearch({ ...filters, category: row.category });
+                  onChange({ ...filters, categoryId: String(row.id) });
+                  onSearch({ ...filters, categoryId: String(row.id) });
                 }}
                 className="hover:text-brand text-left"
               >
-                {row.category}
+                {row.name}
               </button>
               <span className="min-w-[26px] h-[26px] rounded-full bg-blue-50 text-brand text-[11px] font-bold flex items-center justify-center">
                 {row.count}

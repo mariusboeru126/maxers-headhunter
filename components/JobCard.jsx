@@ -40,8 +40,8 @@ function CategoryIcon({ type }) {
 }
 
 export default function JobCard({ job }) {
-  const accent = categoryAccent(job.category);
-  const href = `/jobs/${job.slug || job.id}`;
+  const accent = categoryAccent(job.category_name);
+  const href = `/jobs/${job.detail_token}`;
 
   return (
     <Link

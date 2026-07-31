@@ -7,7 +7,11 @@ export default async function handler(req, res) {
 
   try {
     const rows = await query(
-      "SELECT category, COUNT(*) AS count FROM jobs GROUP BY category ORDER BY count DESC"
+      `SELECT c.id, c.name, COUNT(j.id) AS count
+       FROM categories c
+       LEFT JOIN jobs j ON j.category_id = c.id
+       GROUP BY c.id, c.name
+       ORDER BY c.name`
     );
     return res.status(200).json({ categories: rows });
   } catch (err) {

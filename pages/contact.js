@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [form, setForm] = useState({ subject: "", message: "" });
   const [status, setStatus] = useState({ loading: false, error: "", success: false });
 
   function update(field, value) {
@@ -27,7 +27,7 @@ export default function Contact() {
     }
 
     setStatus({ loading: false, error: "", success: true });
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setForm({ subject: "", message: "" });
   }
 
   return (
@@ -57,7 +57,7 @@ export default function Contact() {
           <div>
             <h3 className="font-semibold text-slate-800 mb-1">Address</h3>
             <p className="text-slate-500 text-sm">
-              123 Business Ave, Suite 100, New York, NY 10001, USA
+              128, Anonas Extension, Quezon, 1101, PH
             </p>
           </div>
         </div>
@@ -74,25 +74,6 @@ export default function Contact() {
             </p>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-            <input
-              required
-              value={form.name}
-              onChange={(e) => update("name", e.target.value)}
-              className="w-full border border-slate-200 rounded-md px-4 py-2.5 text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-            <input
-              required
-              type="email"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              className="w-full border border-slate-200 rounded-md px-4 py-2.5 text-sm"
-            />
-          </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Subject</label>
             <input

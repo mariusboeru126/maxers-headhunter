@@ -60,14 +60,12 @@ export default function Navbar() {
   return (
     <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 h-16 sm:h-[72px] flex items-center">
-        <Link href="/" className="group flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-brand text-white flex items-center justify-center font-extrabold text-xl shrink-0 transition-transform duration-200 group-hover:rotate-[-4deg] group-hover:scale-105">
-            M
-          </div>
-          <div className="leading-tight">
-            <div className="font-bold text-[#0B1F3A] text-[17px] tracking-tight">Maxers</div>
-            <div className="text-[11px] text-slate-500 font-medium">Head Hunter</div>
-          </div>
+        <Link href="/" className="group flex items-center">
+          <img
+            src="/images/updated_logo.png"
+            alt="Maxers Head Hunter"
+            className="h-14 w-52 object-cover object-center transition-transform duration-200 group-hover:scale-[1.03]"
+          />
         </Link>
 
         <nav className="navbar-items hidden flex-1 justify-center items-center gap-4 lg:gap-6 xl:gap-9 text-[13px] font-semibold text-slate-700 whitespace-nowrap">
@@ -112,7 +110,10 @@ export default function Navbar() {
               </button>
 
               {showAvatarMenu && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border border-slate-200 rounded-xl shadow-lg text-left z-10">
+                <div className="absolute right-0 mt-2 w-44 bg-white border border-slate-200 rounded-xl shadow-lg text-left z-10 overflow-hidden">
+                  <Link href="/users" onClick={() => setShowAvatarMenu(false)} className="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50">
+                    My Applications
+                  </Link>
                   <button
                     type="button"
                     onClick={async () => {
@@ -155,13 +156,16 @@ export default function Navbar() {
               </Link>
             ))}
             {user ? (
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="mt-2 rounded-md px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50"
-              >
-                Logout
-              </button>
+              <>
+                <Link href="/users" className="mt-2 rounded-md px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">My Applications</Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded-md px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <Link href="/login" className="mt-2 rounded-md px-4 py-3 text-sm font-semibold text-brand hover:bg-blue-50">
                 Log in

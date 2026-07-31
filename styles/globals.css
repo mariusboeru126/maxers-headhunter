@@ -20,6 +20,18 @@ body {
   min-width: 320px;
 }
 
+.page-enter {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-enter > footer {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
 a {
   color: inherit;
   text-decoration: none;

@@ -2,37 +2,27 @@ import Link from "next/link";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { query } from "../../lib/db";
+import { decryptJobLink } from "../../lib/jobLink";
+import { sanitizeJobHtml } from "../../lib/sanitizeHtml";
 
 export async function getServerSideProps({ params }) {
-  let rows = await query("SELECT * FROM jobs WHERE slug = ?", [params.slug]);
-
-  if (rows.length === 0 && /^\d+$/.test(params.slug)) {
-    rows = await query("SELECT * FROM jobs WHERE id = ?", [params.slug]);
-    if (rows[0]?.slug) {
-      return {
-        redirect: {
-          destination: `/jobs/${rows[0].slug}`,
-          permanent: true,
-        },
-      };
-    }
-  }
+  const jobId = decryptJobLink(params.slug);
+  if (!jobId) return { notFound: true };
+  const rows = await query(
+    "SELECT j.*, c.name AS category_name FROM jobs j JOIN categories c ON c.id = j.category_id WHERE j.id = ?",
+    [jobId]
+  );
 
   if (rows.length === 0) {
     return { notFound: true };
   }
 
   const job = JSON.parse(JSON.stringify(rows[0]));
-  return { props: { job } };
+  return { props: { job, detailToken: params.slug } };
 }
 
-function listFromLines(text) {
-  if (!text) return [];
-  return text.split("\n").filter(Boolean);
-}
-
-export default function JobDetail({ job }) {
-  const applyHref = job.slug ? `/apply/${job.slug}` : `/apply/${job.id}`;
+export default function JobDetail({ job, detailToken }) {
+  const applyHref = `/apply/${detailToken}`;
 
   return (
     <>
@@ -70,30 +60,11 @@ export default function JobDetail({ job }) {
         <div className="md:col-span-2 space-y-8">
           <div>
             <h2 className="font-semibold text-lg text-slate-800 mb-3">Job Description</h2>
-            <p className="text-slate-600 leading-relaxed">{job.description}</p>
+            <div
+              className="job-description text-slate-600 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: sanitizeJobHtml(job.description) }}
+            />
           </div>
-
-          {job.responsibilities && (
-            <div>
-              <h2 className="font-semibold text-lg text-slate-800 mb-3">Responsibilities</h2>
-              <ul className="list-disc list-inside text-slate-600 space-y-1">
-                {listFromLines(job.responsibilities).map((line, i) => (
-                  <li key={i}>{line}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {job.requirements && (
-            <div>
-              <h2 className="font-semibold text-lg text-slate-800 mb-3">Requirements</h2>
-              <ul className="list-disc list-inside text-slate-600 space-y-1">
-                {listFromLines(job.requirements).map((line, i) => (
-                  <li key={i}>{line}</li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
 
         <aside className="bg-slate-50 rounded-lg p-6 h-fit space-y-4">
@@ -105,10 +76,7 @@ export default function JobDetail({ job }) {
             {job.work_type && (
               <p><span className="font-medium text-slate-800">Work Type:</span> {job.work_type}</p>
             )}
-            <p><span className="font-medium text-slate-800">Category:</span> {job.category}</p>
-            {job.salary_range && (
-              <p><span className="font-medium text-slate-800">Salary:</span> {job.salary_range}</p>
-            )}
+            <p><span className="font-medium text-slate-800">Category:</span> {job.category_name}</p>
           </div>
           <Link
             href={applyHref}

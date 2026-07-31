@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 function SocialIcon({ children, href, label }) {
   return (
@@ -13,48 +14,34 @@ function SocialIcon({ children, href, label }) {
 }
 
 export default function Footer() {
+  const [comment, setComment] = useState("");
+  const [commentStatus, setCommentStatus] = useState("");
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    fetch("/api/auth/me").then((response) => response.json()).then((data) => setUser(data.user)).catch(() => setUser(null));
+  }, []);
+
+  async function submitComment(event) {
+    event.preventDefault();
+    setCommentStatus("Sending...");
+    const response = await fetch("/api/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: comment }),
+    });
+    if (response.ok) {
+      setComment("");
+      setCommentStatus("Thanks for your comment.");
+    } else {
+      const data = await response.json().catch(() => ({}));
+      setCommentStatus(data.error || "We could not send your comment. Please try again.");
+    }
+  }
+
   return (
     <footer className="bg-[#0B1F3A] text-slate-300">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 pt-16 pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-        <div>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded bg-white text-brand flex items-center justify-center font-extrabold text-xl shrink-0">
-              M
-            </div>
-            <div className="leading-tight">
-              <div className="font-bold text-white text-[17px]">Maxers</div>
-              <div className="text-[11px] text-slate-400 font-medium">Head Hunter</div>
-            </div>
-          </div>
-          <p className="text-[13px] leading-relaxed text-slate-400 mb-6 max-w-[260px]">
-            Connecting talent with opportunity worldwide. We help individuals
-            build better careers and companies build stronger teams.
-          </p>
-          <div className="flex items-center gap-2.5">
-            <SocialIcon href="#" label="Facebook">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-              </svg>
-            </SocialIcon>
-            <SocialIcon href="#" label="LinkedIn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z" />
-              </svg>
-            </SocialIcon>
-            <SocialIcon href="#" label="Twitter">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-              </svg>
-            </SocialIcon>
-            <SocialIcon href="#" label="Instagram">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="2" width="20" height="20" rx="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-              </svg>
-            </SocialIcon>
-          </div>
-        </div>
 
         <div>
           <h4 className="text-white font-bold text-[13px] tracking-wider mb-5 uppercase">
@@ -103,18 +90,62 @@ export default function Footer() {
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                 <circle cx="12" cy="10" r="3" />
               </svg>
-              123 Business Ave, Suite 100,<br />New York, NY 10001, USA
+              128, Anonas Extension,<br />Quezon, 1101, PH
             </li>
           </ul>
+
+          <div className="flex items-center gap-2.5 mt-8">
+            <SocialIcon href="#" label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              </svg>
+            </SocialIcon>
+            <SocialIcon href="#" label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z" />
+              </svg>
+            </SocialIcon>
+            <SocialIcon href="#" label="Twitter">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
+              </svg>
+            </SocialIcon>
+            <SocialIcon href="#" label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </SocialIcon>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-white font-bold text-[13px] tracking-wider mb-5 uppercase">Send a Comment</h4>
+          {user ? <form onSubmit={submitComment} className="space-y-2.5">
+            <p className="text-[12px] text-slate-400">Sending as {user.fullName}</p>
+            <textarea
+              required
+              minLength={50}
+              rows={3}
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              placeholder="Your comment"
+              className="w-full rounded bg-white/10 border border-white/10 px-3 py-2 text-[12px] text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-light resize-none"
+            />
+            <p className="text-[11px] text-slate-400">At least 50 characters ({comment.trim().length}/50).</p>
+            <button type="submit" className="rounded bg-brand px-4 py-2 text-[12px] font-semibold text-white hover:bg-brand-light transition-colors">Send Comment</button>
+            {commentStatus && <p className="text-[11px] text-slate-400">{commentStatus}</p>}
+          </form> : user === null ? <p className="text-[13px] leading-relaxed text-slate-400">Please <Link href="/login" className="font-semibold text-white hover:text-brand-light">log in</Link> to send us a comment.</p> : <p className="text-[13px] text-slate-400">Loading...</p>}
         </div>
       </div>
 
       <div className="border-t border-white/10">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-slate-500">
-          <p>© 2024 Maxers Head Hunter. All Rights Reserved.</p>
+          <p>© 2026 Maxers Head Hunter. All Rights Reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms &amp; Conditions</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms &amp; Conditions</Link>
           </div>
         </div>
       </div>

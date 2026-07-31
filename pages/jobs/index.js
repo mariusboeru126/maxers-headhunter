@@ -1,25 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import Navbar, { ArrowIcon } from "../../components/Navbar";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import JobCard from "../../components/JobCard";
 import JobsFilterSidebar from "../../components/JobsFilterSidebar";
 
-const PAGE_SIZE = 6;
-
-const CATEGORIES = [
-  "All Categories",
-  "IT & Software",
-  "Accounting & Finance",
-  "Human Resources",
-  "Marketing & Sales",
-  "Design & Creative",
-  "Administration",
-];
+const PAGE_SIZE = 10;
 
 const DEFAULT_FILTERS = {
   keyword: "",
-  category: "All Categories",
+  categoryId: "",
   location: "",
   salaryMin: "",
   salaryMax: "",
@@ -94,7 +83,7 @@ const applySteps = [
 function filtersToParams(filters) {
   const params = new URLSearchParams();
   if (filters.keyword) params.set("keyword", filters.keyword);
-  if (filters.category && filters.category !== "All Categories") params.set("category", filters.category);
+  if (filters.categoryId) params.set("categoryId", filters.categoryId);
   if (filters.location) params.set("location", filters.location);
   if (filters.salaryMin) params.set("salaryMin", filters.salaryMin);
   if (filters.salaryMax) params.set("salaryMax", filters.salaryMax);
@@ -108,20 +97,42 @@ export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [categoryCounts, setCategoryCounts] = useState([]);
-  const [showAll, setShowAll] = useState(false);
+  const loadMoreRef = useRef(null);
 
-  const loadJobs = useCallback(async (nextFilters = filters) => {
-    setLoading(true);
+  const loadJobs = useCallback(async (nextFilters = filters, nextPage = 1, append = false) => {
+    if (append) setLoadingMore(true);
+    else setLoading(true);
     const params = filtersToParams(nextFilters);
+    params.set("page", String(nextPage));
+    params.set("limit", String(PAGE_SIZE));
     const res = await fetch(`/api/jobs?${params.toString()}`);
     const data = await res.json();
-    setJobs(data.jobs || []);
-    setTotal(data.total ?? (data.jobs || []).length);
-    setShowAll(false);
-    setLoading(false);
+    const nextJobs = data.jobs || [];
+    setJobs((current) => append ? [...current, ...nextJobs] : nextJobs);
+    setTotal(data.total ?? nextJobs.length);
+    setPage(nextPage);
+    if (append) setLoadingMore(false);
+    else setLoading(false);
   }, [filters]);
+
+  const loadMore = useCallback(() => {
+    if (!loading && !loadingMore && jobs.length < total) loadJobs(filters, page + 1, true);
+  }, [filters, jobs.length, loadJobs, loading, loadingMore, page, total]);
+
+  useEffect(() => { loadMoreRef.current = loadMore; }, [loadMore]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) loadMoreRef.current?.();
+    }, { rootMargin: "300px" });
+    const target = document.getElementById("jobs-load-more");
+    if (target) observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     loadJobs(DEFAULT_FILTERS);
@@ -143,9 +154,8 @@ export default function Jobs() {
     loadJobs(next);
   }
 
-  const visibleJobs = showAll ? jobs : jobs.slice(0, PAGE_SIZE);
   const start = jobs.length === 0 ? 0 : 1;
-  const end = showAll ? jobs.length : Math.min(PAGE_SIZE, jobs.length);
+  const end = jobs.length;
   const rangeLabel = loading
     ? "Loading..."
     : jobs.length === 0
@@ -174,9 +184,11 @@ export default function Jobs() {
             Your next career move starts here.
           </p>
         </div>
+      </section>
 
-        {/* Floating hero search */}
-        <div className="absolute left-0 right-0 bottom-0 translate-y-1/2 z-10">
+      {/* Sticky job search */}
+      <div className="sticky top-20 z-40 -mt-7 lg:-mt-10">
+        <div className="relative z-10">
           <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
             <form
               onSubmit={handleHeroSearch}
@@ -196,12 +208,13 @@ export default function Jobs() {
               </div>
               <div className="flex-1 border-b lg:border-b-0 lg:border-r border-slate-100">
                 <select
-                  value={filters.category}
-                  onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
+                  value={filters.categoryId}
+                  onChange={(e) => setFilters((f) => ({ ...f, categoryId: e.target.value }))}
                   className="w-full h-full px-4 py-3.5 text-[13px] text-slate-600 focus:outline-none bg-transparent"
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                  <option value="">All Categories</option>
+                  {categoryCounts.map((category) => (
+                    <option key={category.id} value={category.id}>{category.name}</option>
                   ))}
                 </select>
               </div>
@@ -226,7 +239,7 @@ export default function Jobs() {
             </form>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Main content */}
       <section className="bg-[#F5F7FA] pt-24 lg:pt-28 pb-16">
@@ -250,22 +263,16 @@ export default function Jobs() {
               )}
 
               <div className="space-y-4">
-                {visibleJobs.map((job) => (
+                {jobs.map((job) => (
                   <JobCard key={job.id} job={job} />
                 ))}
               </div>
 
-              {!loading && jobs.length > PAGE_SIZE && !showAll && (
-                <div className="mt-8 text-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowAll(true)}
-                    className="btn-outline"
-                  >
-                    View All Jobs <ArrowIcon />
-                  </button>
-                </div>
-              )}
+              <div id="jobs-load-more" className="py-5 text-center text-[13px] text-slate-500">
+                {loadingMore && "Loading more jobs..."}
+                {!loading && !loadingMore && jobs.length < total && "Scroll to load more jobs"}
+                {!loading && !loadingMore && jobs.length > 0 && jobs.length >= total && "You have reached the end of the listings."}
+              </div>
             </div>
 
             {/* Sidebar */}
