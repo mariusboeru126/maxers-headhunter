@@ -1,19 +1,24 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import HCaptcha from "../components/HCaptcha";
 
 export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [status, setStatus] = useState({ loading: false, error: "" });
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaRef = useRef(null);
 
   const nextParam = Array.isArray(router.query.next) ? router.query.next[0] : router.query.next;
   const next = nextParam || "/";
   const googleHref = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
   const queryError = typeof router.query.error === "string" ? decodeURIComponent(router.query.error) : "";
+  const verificationSent = router.query.verification === "sent";
+  const verified = router.query.verified === "1";
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -21,22 +26,32 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!captchaToken) {
+      setStatus({ loading: false, error: "Please complete the hCaptcha challenge." });
+      return;
+    }
+
     setStatus({ loading: true, error: "" });
 
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, captchaToken }),
     });
     const data = await res.json();
 
     if (!res.ok) {
+      setCaptchaToken("");
+      captchaRef.current?.reset();
       setStatus({ loading: false, error: data.error || "Login failed." });
       return;
     }
 
     router.push(next);
   }
+
+  const handleCaptchaVerify = useCallback((token) => setCaptchaToken(token), []);
+  const handleCaptchaExpire = useCallback(() => setCaptchaToken(""), []);
 
   return (
     <>
@@ -49,6 +64,16 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-slate-200 rounded-lg p-8">
+          {verificationSent && (
+            <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-4 py-2">
+              Verification email sent. Check your inbox before logging in.
+            </p>
+          )}
+          {verified && (
+            <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-4 py-2">
+              Your email has been verified. You can now log in.
+            </p>
+          )}
           {(status.error || queryError) && (
             <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-4 py-2">
               {status.error || queryError}
@@ -75,6 +100,8 @@ export default function Login() {
               className="w-full border border-slate-200 rounded-md px-4 py-2.5 text-sm"
             />
           </div>
+
+          <HCaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
 
           <button
             type="submit"

@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import HCaptcha from "../components/HCaptcha";
 
 export default function Signup() {
   const router = useRouter();
   const [form, setForm] = useState({ fullName: "", email: "", phone: "", password: "" });
   const [status, setStatus] = useState({ loading: false, error: "" });
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaRef = useRef(null);
 
   const nextParam = Array.isArray(router.query.next) ? router.query.next[0] : router.query.next;
   const next = nextParam || "/";
@@ -21,23 +24,32 @@ export default function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!captchaToken) {
+      setStatus({ loading: false, error: "Please complete the hCaptcha challenge." });
+      return;
+    }
+
     setStatus({ loading: true, error: "" });
 
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, captchaToken }),
     });
     const data = await res.json();
 
     if (!res.ok) {
+      setCaptchaToken("");
+      captchaRef.current?.reset();
       setStatus({ loading: false, error: data.error || "Signup failed." });
       return;
     }
 
-    const next = router.query.next || "/";
-    router.push(Array.isArray(next) ? next[0] : next);
+    router.push(`/login?verification=sent&email=${encodeURIComponent(form.email)}`);
   }
+
+  const handleCaptchaVerify = useCallback((token) => setCaptchaToken(token), []);
+  const handleCaptchaExpire = useCallback(() => setCaptchaToken(""), []);
 
   return (
     <>
@@ -105,6 +117,8 @@ export default function Signup() {
               className="w-full border border-slate-200 rounded-md px-4 py-2.5 text-sm"
             />
           </div>
+
+          <HCaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
 
           <button
             type="submit"

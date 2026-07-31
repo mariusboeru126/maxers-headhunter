@@ -1,18 +1,23 @@
 import { query } from "../../../lib/db";
 import { verifyPassword, signToken, setAuthCookie } from "../../../lib/auth";
+import { verifyHCaptcha } from "../../../lib/hcaptcha";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, password } = req.body || {};
+  const { email, password, captchaToken } = req.body || {};
 
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required." });
   }
 
   try {
+    if (!(await verifyHCaptcha(req, captchaToken))) {
+      return res.status(400).json({ error: "Please complete the hCaptcha challenge." });
+    }
+
     const rows = await query("SELECT * FROM users WHERE email = ?", [email]);
     const user = rows[0];
 
@@ -23,6 +28,10 @@ export default async function handler(req, res) {
     const valid = await verifyPassword(password, user.password_hash);
     if (!valid) {
       return res.status(401).json({ error: "Invalid email or password." });
+    }
+
+    if (!user.email_verified_at) {
+      return res.status(403).json({ error: "Please verify your email before logging in." });
     }
 
     const token = signToken({ id: user.id, email: user.email, fullName: user.full_name });

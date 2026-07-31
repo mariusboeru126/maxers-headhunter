@@ -111,21 +111,6 @@ const trainingModes = [
   },
 ];
 
-const founders = [
-  {
-    name: "Ghena Dela Torre",
-    role: "Co-Founder & CEO",
-    image: "/images/Co-Founder-1.jpg",
-    bio: "With over 15 years in global recruitment, Michael built Maxers Head Hunter to bridge the gap between exceptional talent and world-class employers.",
-  },
-  {
-    name: "Sarah Chen",
-    role: "Co-Founder & COO",
-    image: "/images/Co-Founder-2.jpg",
-    bio: "Sarah leads operations and candidate development programs, ensuring every professional receives personalized support from application to placement.",
-  },
-];
-
 const founderQualifications = [
   "Juris Doctor (J.D.)",
   "Master of Arts in Education, major in Special Education (MAEdSPED)",
@@ -410,10 +395,10 @@ export default function About() {
                   border border-slate-100 shadow-card-sm"
                 />
                 <p className="text-[13px] font-bold tracking-wide leading-relaxed text-slate-600 mt-4">
-                  GHENA B. DELA TORRE
+                  GENALYN B. DELA TORRE, M.A., J.D.
                 </p>
                 <p className="text-[12px] text-slate-500">
-                  Co-Founder & CEO
+                  Founder & CEO
                 </p>
               </div>
             </div>
