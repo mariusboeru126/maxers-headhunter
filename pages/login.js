@@ -4,7 +4,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import GoogleSignInButton from "../components/GoogleSignInButton";
-import HCaptcha from "../components/HCaptcha";
+import Recaptcha from "../components/Recaptcha";
 
 export default function Login() {
   const router = useRouter();
@@ -17,8 +17,7 @@ export default function Login() {
   const next = nextParam || "/";
   const googleHref = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
   const queryError = typeof router.query.error === "string" ? decodeURIComponent(router.query.error) : "";
-  const verificationSent = router.query.verification === "sent";
-  const verified = router.query.verified === "1";
+  const registered = router.query.registered === "1";
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -27,7 +26,7 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!captchaToken) {
-      setStatus({ loading: false, error: "Please complete the hCaptcha challenge." });
+      setStatus({ loading: false, error: "Please complete the reCAPTCHA challenge." });
       return;
     }
 
@@ -64,14 +63,9 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-slate-200 rounded-lg p-8">
-          {verificationSent && (
+          {registered && (
             <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-4 py-2">
-              Verification email sent. Check your inbox before logging in.
-            </p>
-          )}
-          {verified && (
-            <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-md px-4 py-2">
-              Your email has been verified. You can now log in.
+              Account created. You can now log in.
             </p>
           )}
           {(status.error || queryError) && (
@@ -101,7 +95,7 @@ export default function Login() {
             />
           </div>
 
-          <HCaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
+          <Recaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
 
           <button
             type="submit"

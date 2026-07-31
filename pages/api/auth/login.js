@@ -1,6 +1,6 @@
 import { query } from "../../../lib/db";
 import { verifyPassword, signToken, setAuthCookie } from "../../../lib/auth";
-import { verifyHCaptcha } from "../../../lib/hcaptcha";
+import { verifyRecaptcha } from "../../../lib/recaptcha";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,8 +14,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!(await verifyHCaptcha(req, captchaToken))) {
-      return res.status(400).json({ error: "Please complete the hCaptcha challenge." });
+    if (!(await verifyRecaptcha(req, captchaToken))) {
+      return res.status(400).json({ error: "Please complete the reCAPTCHA challenge." });
     }
 
     const rows = await query("SELECT * FROM users WHERE email = ?", [email]);
@@ -28,10 +28,6 @@ export default async function handler(req, res) {
     const valid = await verifyPassword(password, user.password_hash);
     if (!valid) {
       return res.status(401).json({ error: "Invalid email or password." });
-    }
-
-    if (!user.email_verified_at) {
-      return res.status(403).json({ error: "Please verify your email before logging in." });
     }
 
     const token = signToken({ id: user.id, email: user.email, fullName: user.full_name });

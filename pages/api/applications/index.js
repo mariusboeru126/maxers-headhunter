@@ -1,5 +1,6 @@
 import { query } from "../../../lib/db";
 import { getUserFromRequest } from "../../../lib/auth";
+import { verifyRecaptcha } from "../../../lib/recaptcha";
 import { formidable } from "formidable";
 import fs from "fs/promises";
 import path from "path";
@@ -67,6 +68,7 @@ export default async function handler(req, res) {
   const coverLetter = first(fields.coverLetter);
   const resumeLink = first(fields.resumeLink);
   const resumeMethod = first(fields.resumeMethod);
+  const captchaToken = first(fields.captchaToken);
   let answers = {};
   try { answers = JSON.parse(first(fields.answers) || "{}"); } catch { return res.status(400).json({ error: "Application answers are invalid." }); }
   const resumeFile = first(files.resumeFile);
@@ -74,6 +76,14 @@ export default async function handler(req, res) {
 
   if (!jobId || !fullName || !email || !phone || !coverLetter) {
     return res.status(400).json({ error: "Job, full name, email, phone, and cover letter are required." });
+  }
+  try {
+    if (!(await verifyRecaptcha(req, captchaToken))) {
+      return res.status(400).json({ error: "Please complete the reCAPTCHA challenge." });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "reCAPTCHA verification is unavailable. Please try again." });
   }
   if (!['upload', 'link'].includes(resumeMethod)) {
     return res.status(400).json({ error: "Choose how you want to provide your resume." });

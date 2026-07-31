@@ -1,7 +1,6 @@
 import { query } from "../../../lib/db";
-import { hashPassword, signEmailVerificationToken } from "../../../lib/auth";
-import { verifyHCaptcha } from "../../../lib/hcaptcha";
-import { sendVerificationEmail } from "../../../lib/email";
+import { hashPassword } from "../../../lib/auth";
+import { verifyRecaptcha } from "../../../lib/recaptcha";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -15,8 +14,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!(await verifyHCaptcha(req, captchaToken))) {
-      return res.status(400).json({ error: "Please complete the hCaptcha challenge." });
+    if (!(await verifyRecaptcha(req, captchaToken))) {
+      return res.status(400).json({ error: "Please complete the reCAPTCHA challenge." });
     }
 
     const existing = await query("SELECT id FROM users WHERE email = ?", [email]);
@@ -25,19 +24,12 @@ export default async function handler(req, res) {
     }
 
     const passwordHash = await hashPassword(password);
-    const result = await query(
+    await query(
       "INSERT INTO users (full_name, email, password_hash, phone) VALUES (?, ?, ?, ?)",
       [fullName, email, passwordHash, phone || null]
     );
 
-    const verificationToken = signEmailVerificationToken({ id: result.insertId, email });
-    const appUrl = process.env.APP_URL || `${req.headers["x-forwarded-proto"] || "http"}://${req.headers.host}`;
-    const verificationUrl = `${appUrl}/api/auth/verify-email?token=${encodeURIComponent(verificationToken)}`;
-    await sendVerificationEmail({ email, fullName, verificationUrl });
-
-    return res.status(201).json({
-      message: "Account created. Check your email to verify your account before logging in.",
-    });
+    return res.status(201).json({ message: "Account created. You can now log in." });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Something went wrong. Please try again." });

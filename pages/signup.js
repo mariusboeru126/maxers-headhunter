@@ -4,7 +4,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import GoogleSignInButton from "../components/GoogleSignInButton";
-import HCaptcha from "../components/HCaptcha";
+import Recaptcha from "../components/Recaptcha";
 
 export default function Signup() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!captchaToken) {
-      setStatus({ loading: false, error: "Please complete the hCaptcha challenge." });
+      setStatus({ loading: false, error: "Please complete the reCAPTCHA challenge." });
       return;
     }
 
@@ -45,7 +45,7 @@ export default function Signup() {
       return;
     }
 
-    router.push(`/login?verification=sent&email=${encodeURIComponent(form.email)}`);
+    router.push("/login?registered=1");
   }
 
   const handleCaptchaVerify = useCallback((token) => setCaptchaToken(token), []);
@@ -118,7 +118,7 @@ export default function Signup() {
             />
           </div>
 
-          <HCaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
+          <Recaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
 
           <button
             type="submit"

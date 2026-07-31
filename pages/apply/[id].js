@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import Recaptcha from "../../components/Recaptcha";
 import { query } from "../../lib/db";
 import { decryptJobLink } from "../../lib/jobLink";
 import { getUserFromRequest } from "../../lib/auth";
@@ -34,6 +35,8 @@ export default function Apply({ job, questions, detailToken, existingApplication
   const [answers, setAnswers] = useState({});
   const [resumeFile, setResumeFile] = useState(null);
   const [resumeMethod, setResumeMethod] = useState("upload");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const captchaRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -52,6 +55,10 @@ export default function Apply({ job, questions, detailToken, existingApplication
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!captchaToken) {
+      setStatus({ loading: false, error: "Please complete the reCAPTCHA challenge.", success: false });
+      return;
+    }
     setStatus({ loading: true, error: "", success: false });
 
     const payload = new FormData();
@@ -62,6 +69,7 @@ export default function Apply({ job, questions, detailToken, existingApplication
     payload.append("coverLetter", form.coverLetter);
     payload.append("resumeLink", form.resumeLink);
     payload.append("resumeMethod", resumeMethod);
+    payload.append("captchaToken", captchaToken);
     payload.append("answers", JSON.stringify(answers));
     if (resumeFile) payload.append("resumeFile", resumeFile);
 
@@ -72,12 +80,17 @@ export default function Apply({ job, questions, detailToken, existingApplication
     const data = await res.json();
 
     if (!res.ok) {
+      setCaptchaToken("");
+      captchaRef.current?.reset();
       setStatus({ loading: false, error: data.error || "Something went wrong.", success: false });
       return;
     }
 
     setStatus({ loading: false, error: "", success: true });
   }
+
+  const handleCaptchaVerify = useCallback((token) => setCaptchaToken(token), []);
+  const handleCaptchaExpire = useCallback(() => setCaptchaToken(""), []);
 
   return (
     <>
@@ -229,6 +242,8 @@ export default function Apply({ job, questions, detailToken, existingApplication
                 </div>
               );
             })}
+
+            <Recaptcha ref={captchaRef} onVerify={handleCaptchaVerify} onExpire={handleCaptchaExpire} />
 
             <button
               type="submit"
