@@ -48,7 +48,7 @@ export default function Contact() {
         <div className="space-y-6">
           <div>
             <h3 className="font-semibold text-slate-800 mb-1">Phone</h3>
-            <p className="text-slate-500 text-sm">+1 (123) 456-7890</p>
+            <p className="text-slate-500 text-sm">+63 (294) 948-3948</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-800 mb-1">Email</h3>

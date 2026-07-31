@@ -81,7 +81,7 @@ const whatWeDoItems = [
 const trainingModes = [
   {
     title: "Talent Solutions",
-    image: "/images/training_zoom.png",
+    image: "/images/talent_solution.png",
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8">
         <rect x="2" y="5" width="14" height="10" rx="2" />
@@ -91,7 +91,7 @@ const trainingModes = [
   },
   {
     title: "Strategic Consulting",
-    image: "/images/classroom.png",
+    image: "/images/strategic_consulting.png",
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8">
         <rect x="3" y="4" width="18" height="12" rx="1" />
@@ -101,7 +101,7 @@ const trainingModes = [
   },
   {
     title: "Career Development",
-    image: "/images/learning_online.png",
+    image: "/images/career_dev.png",
     icon: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8">
         <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
@@ -113,7 +113,7 @@ const trainingModes = [
 
 const founders = [
   {
-    name: "Michael Reyes",
+    name: "Ghena Dela Torre",
     role: "Co-Founder & CEO",
     image: "/images/Co-Founder-1.jpg",
     bio: "With over 15 years in global recruitment, Michael built Maxers Head Hunter to bridge the gap between exceptional talent and world-class employers.",
@@ -124,6 +124,24 @@ const founders = [
     image: "/images/Co-Founder-2.jpg",
     bio: "Sarah leads operations and candidate development programs, ensuring every professional receives personalized support from application to placement.",
   },
+];
+
+const founderQualifications = [
+  "Juris Doctor (J.D.)",
+  "Master of Arts in Education, major in Special Education (MAEdSPED)",
+  "BSBA in Business Administration, major in Business Management",
+];
+
+const founderCompetencies = [
+  "Leadership",
+  "Integrity",
+  "Innovation",
+  "Accountability",
+  "Customer focus",
+  "Strategic planning",
+  "Collaboration",
+  "Results-driven",
+  "Adaptability",
 ];
 
 const teamPrinciples = [
@@ -313,7 +331,7 @@ export default function About() {
 
             <div>
               <img
-                src="/images/train.png"
+                src="/images/talent_consulting.png"
                 alt="Training and development session"
                 className="w-full h-[280px] lg:h-[360px] object-cover rounded-lg shadow-card"
               />
@@ -348,35 +366,58 @@ export default function About() {
       {/* Founders — placed naturally before Our Team */}
       <section className="bg-[#F5F7FA] py-20 lg:py-24">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10 lg:mb-12">
             <p className="section-label inline-flex">Leadership</p>
-            <h2 className="text-[28px] lg:text-[32px] font-bold text-[#0B1F3A] mb-3">
-              Meet Our Founders
-            </h2>
-            <p className="text-[14px] text-slate-500 max-w-xl mx-auto">
-              Maxers Head Hunter was built on a shared belief that the right connection
-              can change a career — and a company.
-            </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-[900px] mx-auto">
-            {founders.map((founder) => (
-              <div
-                key={founder.name}
-                className="motion-card image-frame bg-white rounded-lg border border-slate-100 shadow-card-sm overflow-hidden"
-              >
-                <img
-                  src={founder.image}
-                  alt={founder.name}
-                  className="motion-image w-full h-[220px] object-cover object-top"
-                />
-                <div className="p-6">
-                  <h3 className="font-bold text-[17px] text-[#0B1F3A]">{founder.name}</h3>
-                  <p className="text-brand text-[13px] font-semibold mb-3">{founder.role}</p>
-                  <p className="text-[13px] leading-relaxed text-slate-500">{founder.bio}</p>
+
+          <article className="motion-card max-w-[900px] mx-auto mt-8 lg:mt-10 bg-white border border-slate-100 rounded-xl shadow-card-sm overflow-hidden">
+            <div className="bg-[#0B1F3A] px-6 py-5 sm:px-8 sm:py-6">
+              <p className="text-[11px] font-semibold tracking-[0.16em] uppercase text-blue-200 mb-1">Founder profile</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-white">Leading global staffing forward</h3>
+            </div>
+            <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 p-6 sm:p-8">
+              <div>
+                <h4 className="text-[13px] font-bold tracking-wide uppercase text-brand mb-3">Founder&apos;s Job Description</h4>
+                <p className="text-[14px] leading-relaxed text-slate-600">
+                  The founder is responsible for establishing and leading the overall vision, strategy, and growth of global staffing. This role oversees business development, operational excellence, financial sustainability, client relationships, and organizational culture while ensuring the company delivers high-quality staffing solutions to clients worldwide.
+                </p>
+
+                <h4 className="text-[13px] font-bold tracking-wide uppercase text-brand mt-7 mb-3">Founder&apos;s Qualification</h4>
+                <ul className="space-y-2.5">
+                  {founderQualifications.map((qualification) => (
+                    <li key={qualification} className="flex gap-3 text-[13px] leading-relaxed text-slate-600">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
+                      {qualification}
+                    </li>
+                  ))}
+                </ul>
+
+                <h4 className="text-[13px] font-bold tracking-wide uppercase text-brand mt-7 mb-3">Core Competencies</h4>
+                <div className="flex flex-wrap gap-2">
+                  {founderCompetencies.map((competency) => (
+                    <span key={competency} className="rounded-full bg-blue-50 px-3 py-1.5 text-[12px] font-semibold text-brand">
+                      {competency}
+                    </span>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+
+              <div className="lg:border-l lg:border-slate-100 lg:pl-8">
+                <img
+                  src="/images/Co-Founder-1.jpg"
+                  alt="Founder profile illustration"
+                  className="w-full object-cover rounded-lg
+                  border border-slate-100 shadow-card-sm"
+                />
+                <p className="text-[13px] font-bold tracking-wide leading-relaxed text-slate-600 mt-4">
+                  GHENA B. DELA TORRE
+                </p>
+                <p className="text-[12px] text-slate-500">
+                  Co-Founder & CEO
+                </p>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 

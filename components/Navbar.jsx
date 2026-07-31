@@ -14,6 +14,7 @@ export default function Navbar() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const avatarMenuRef = useRef(null);
 
   useEffect(() => {
@@ -22,6 +23,10 @@ export default function Navbar() {
       .then((data) => setUser(data.user))
       .catch(() => setUser(null));
   }, [router.pathname, router.isReady]);
+
+  useEffect(() => {
+    setShowMobileMenu(false);
+  }, [router.asPath]);
 
   useEffect(() => {
     function onDocumentClick(event) {
@@ -54,7 +59,7 @@ export default function Navbar() {
 
   return (
     <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-[72px] grid grid-cols-[1fr_auto_1fr] items-center">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10 h-16 sm:h-[72px] flex items-center">
         <Link href="/" className="group flex items-center gap-3">
           <div className="w-10 h-10 rounded bg-brand text-white flex items-center justify-center font-extrabold text-xl shrink-0 transition-transform duration-200 group-hover:rotate-[-4deg] group-hover:scale-105">
             M
@@ -65,7 +70,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        <nav className="lg:flex items-center gap-9 text-[13px] font-semibold text-slate-700">
+        <nav className="navbar-items hidden flex-1 justify-center items-center gap-4 lg:gap-6 xl:gap-9 text-[13px] font-semibold text-slate-700 whitespace-nowrap">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -79,7 +84,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center gap-3 sm:gap-3">
           {user ? (
             <>
               <span className="hidden xl:inline text-xs text-slate-500 font-medium">
@@ -89,22 +94,11 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center justify-center border border-brand text-brand hover:bg-brand/5 text-[13px] font-semibold px-5 py-2.5 rounded transition-all hover:-translate-y-0.5"
+              className=" items-center justify-center border border-brand text-brand hover:bg-brand/5 text-[13px] font-semibold px-3 lg:px-5 py-2.5 rounded transition-all hover:-translate-y-0.5"
             >
               Login
             </Link>
           )}
-
-          <Link
-            href="/jobs"
-            className="bg-brand hover:bg-[#003d94] text-white text-[13px] font-semibold px-6 py-2.5 rounded transition-all hover:-translate-y-0.5 hover:shadow-lg inline-flex items-center gap-2"
-          >
-            Apply Now
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-            </svg>
-          </Link>
 
           {user && (
             <div className="relative" ref={avatarMenuRef}>
@@ -133,8 +127,49 @@ export default function Navbar() {
               )}
             </div>
           )}
+
+          <button
+            type="button"
+            onClick={() => setShowMobileMenu((open) => !open)}
+            className="sm:hidden w-10 h-10 inline-flex items-center justify-center rounded border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
+            aria-label="Toggle navigation menu"
+            aria-expanded={showMobileMenu}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              {showMobileMenu ? <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" /> : <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {showMobileMenu && (
+        <div className="sm:hidden absolute top-full inset-x-0 bg-white border-b border-slate-200 shadow-lg px-4 sm:px-6 py-4 animate-[page-enter_180ms_ease-out]">
+          <nav className="grid gap-1">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-md px-4 py-3 text-sm font-semibold transition-colors ${isActive(link.href) ? "bg-blue-50 text-brand" : "text-slate-700 hover:bg-slate-50 hover:text-brand"}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            {user ? (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="mt-2 rounded-md px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link href="/login" className="mt-2 rounded-md px-4 py-3 text-sm font-semibold text-brand hover:bg-blue-50">
+                Log in
+              </Link>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
