@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Rich text entered in the admin's Tiptap editor. Tailwind preflight resets
+   lists, so restore semantic list markers and spacing only for job content. */
+.job-description ul { list-style: disc; margin: 1rem 0; padding-left: 1.5rem; }
+.job-description ol { list-style: decimal; margin: 1rem 0; padding-left: 1.5rem; }
+.job-description li { margin: .45rem 0; padding-left: .2rem; }
+.job-description p { margin: .75rem 0; }
+.job-description li p { margin: 0; }
+
 html,
 body {
   padding: 0;

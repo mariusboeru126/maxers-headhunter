@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const rows = await query("SELECT * FROM users WHERE email = ?", [email]);
     const user = rows[0];
 
-    if (!user) {
+    if (!user || !user.is_active) {
       return res.status(401).json({ error: "Invalid email or password." });
     }
 

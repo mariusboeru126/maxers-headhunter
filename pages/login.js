@@ -15,7 +15,6 @@ export default function Login() {
 
   const nextParam = Array.isArray(router.query.next) ? router.query.next[0] : router.query.next;
   const next = nextParam || "/";
-  const googleHref = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
   const queryError = typeof router.query.error === "string" ? decodeURIComponent(router.query.error) : "";
   const registered = router.query.registered === "1";
 
@@ -114,7 +113,7 @@ export default function Login() {
             </div>
           </div>
 
-          <GoogleSignInButton href={googleHref} />
+          <GoogleSignInButton next={next} />
 
           <p className="text-sm text-slate-500 text-center">
             Don&apos;t have an account?{" "}

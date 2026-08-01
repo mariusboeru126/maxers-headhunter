@@ -37,6 +37,9 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error(error);
+    if (error.code === "ACCOUNT_BLOCKED") {
+      return res.status(403).json({ error: "This account has been blocked." });
+    }
     return res.status(401).json({ error: "Google login failed. Please try again." });
   }
 }

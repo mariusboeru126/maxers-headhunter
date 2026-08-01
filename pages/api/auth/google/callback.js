@@ -48,6 +48,9 @@ export default async function handler(req, res) {
     return res.redirect(safeNextPath(nextPath));
   } catch (error) {
     console.error(error);
+    if (error.code === "ACCOUNT_BLOCKED") {
+      return res.redirect("/login?error=This+account+has+been+blocked.");
+    }
     return res.redirect("/login?error=Google+login+failed.+Please+try+again.");
   }
 }

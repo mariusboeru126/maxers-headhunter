@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar, { ArrowIcon } from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -153,39 +154,93 @@ const processSteps = [
   },
 ];
 
+const testimonials = [
+  ["Michael LaFramboise", "CEO & CoFounder", "Aurelius Systems", "Their executive search team understood the brief immediately and delivered exceptional leaders across two markets.", "AS"],
+  ["Svenja Falk", "Founder", "Bridget", "Maxers gave us fast access to quality candidates without compromising on fit or cultural alignment.", "NL"],
+  ["Denis Bicanic", "Chief Executive Officer", "Veridian Health", "A trusted global partner—precise, responsive, and consistently strong on international recruitment.", "VH"],
+  ["Shawn Heeren", "CEO", "Crestline Group", "The shortlist was thoughtful, diverse, and ready to move.", "CG"],
+  ["Austin Weatherford", "Founder & CEO", "Atlas Ventures", "They bring the rigor of a top consulting firm and the care of a long-term business partner.", "AV"],
+  ["Grant Stenger", "CEO", "Kinetic Works", "Maxers helped us scale a specialist team quickly while keeping every candidate experience first-class.", "KW"],
+  ["Kate Johnson", "CEO", "Lumen Collective", "The market insight was as valuable as the hires.", "LC"],
+  ["Josh Stevens", "Chairman & CEO", "HarborPoint", "Professional, transparent, and deeply connected.", "HP"],
+  ["Maurice Brewster", "Co-Founder & CEO", "Mosaic Global", "Maxers made our international expansion feel clear and manageable.", "MG"],
+];
+
 export default function Home() {
+  const [testimonialPage, setTestimonialPage] = useState(0);
+  const testimonialGroups = [testimonials.slice(0, 3), testimonials.slice(3, 6), testimonials.slice(6, 9)];
+  useEffect(() => { const timer = window.setInterval(() => setTestimonialPage((page) => (page + 1) % 3), 6500); return () => window.clearInterval(timer); }, []);
   return (
     <>
       <Navbar />
 
-      <section className="grid lg:grid-cols-[42%_58%] min-h-[520px]">
-        <div className="bg-[#F5F7FA] flex items-center px-8 lg:px-14 xl:px-20 py-16 lg:py-0">
-          <div className="max-w-[480px]">
-            <p className="section-label">Welcome to Maxers Head Hunter</p>
-            <h1 className="text-[34px] lg:text-[42px] xl:text-[46px] font-extrabold text-[#0B1F3A] leading-[1.15] mb-6">
-              Connecting Talent with Opportunity{" "}
-              <span className="text-brand">Worldwide</span>
+      <section
+        className="relative min-h-[calc(100svh-80px)] overflow-hidden bg-[#edf4fc] bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/back.png')" }}
+      >
+        <div className="relative z-10 max-w-[1280px] min-h-[calc(100svh-80px)] mx-auto px-6 lg:px-10 py-16 lg:py-24 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-20 items-center">
+          <div className="max-w-[590px]">
+            <p className="section-label">Global recruitment, thoughtfully connected</p>
+            <h1 className="text-[38px] sm:text-[48px] lg:text-[60px] font-extrabold text-[#0B1F3A] leading-[1.08] tracking-tight mb-7">
+              Opportunity has no borders.
             </h1>
-            <p className="text-[14px] leading-relaxed text-slate-500 mb-10">
-              We help skilled professionals find rewarding careers while
-              helping businesses hire the right people through reliable
-              recruitment, training, and career support.
+            <p className="text-[16px] sm:text-[18px] leading-relaxed text-slate-700 max-w-[560px]">
+              We provide quality and specialized talents connecting to diverse industries through global hiring process and expertise.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/jobs" className="btn-primary">
-                Find Jobs <ArrowIcon />
-              </Link>
-              <Link href="/contact" className="btn-outline">
-                Contact Us <ArrowIcon />
-              </Link>
-            </div>
+          </div>
+
+          <div className="grid gap-5 lg:justify-items-end">
+            <Link
+              href="/contact"
+              className="group w-full max-w-[460px] rounded-2xl border border-white/80 bg-[#0A2550]/90 backdrop-blur-sm px-7 sm:px-9 py-7 shadow-[0_20px_45px_rgba(10,37,80,0.23)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#0047AB]"
+            >
+              <span className="text-[11px] font-bold tracking-[0.22em] text-blue-200 uppercase">For employers</span>
+              <span className="mt-3 flex items-center justify-between gap-4 text-[26px] sm:text-[32px] font-extrabold leading-tight text-white">
+                I&apos;m Looking to Hire <ArrowIcon />
+              </span>
+            </Link>
+            <Link
+              href="/jobs"
+              className="group w-full max-w-[460px] rounded-2xl border border-[#0047AB]/20 bg-white/90 backdrop-blur-sm px-7 sm:px-9 py-7 shadow-[0_20px_45px_rgba(10,37,80,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:bg-white"
+            >
+              <span className="text-[11px] font-bold tracking-[0.22em] text-brand uppercase">For candidates</span>
+              <span className="mt-3 flex items-center justify-between gap-4 text-[26px] sm:text-[32px] font-extrabold leading-tight text-[#0B1F3A] group-hover:text-brand">
+                I&apos;m Looking for Jobs <ArrowIcon />
+              </span>
+            </Link>
+            <p className="max-w-[460px] pt-2 text-center text-[15px] font-medium leading-relaxed text-[#0B396F] lg:text-right">
+              Your partner for professional career across boarders.
+            </p>
           </div>
         </div>
-        <div className="image-frame relative min-h-[320px] lg:min-h-0">
+      </section>
+
+      <section className="max-w-[1280px] mx-auto px-6 lg:px-10 py-20 lg:py-24 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="image-frame rounded-2xl">
+          <p className="section-label">Welcome to Maxers Head Hunter</p>
+          <h1 className="text-[34px] lg:text-[42px] xl:text-[46px] font-extrabold text-[#0B1F3A] leading-[1.15] mb-6">
+            Connecting Talent with Opportunity{" "}
+            <span className="text-brand">Worldwide</span>
+          </h1>
+          <p className="text-[14px] leading-relaxed text-slate-500 mb-10">
+            We help skilled professionals find rewarding careers while
+            helping businesses hire the right people through reliable
+            recruitment, training, and career support.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/jobs" className="btn-primary">
+              Find Jobs <ArrowIcon />
+            </Link>
+            <Link href="/contact" className="btn-outline">
+              Contact Us <ArrowIcon />
+            </Link>
+          </div>
+        </div>
+        <div class="image-frame relative min-h-[220px]">
           <img
             src="/images/home_1.png"
-            alt="Professional interview meeting"
-            className="motion-image absolute inset-0 w-full h-full object-cover object-center"
+            alt="Team collaborating in a meeting"
+            className="motion-image w-full h-[340px] lg:h-[380px] object-cover rounded-2xl shadow-card"
           />
         </div>
       </section>
@@ -211,7 +266,7 @@ export default function Home() {
             support.
           </p>
         </div>
-        <div>
+        <div class="image-frame relative min-h-[220px]">
           <img
             src="/images/home_2.png"
             alt="Team collaborating in a meeting"
@@ -256,6 +311,13 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-white py-20 lg:py-28 overflow-hidden">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-10"><div><p className="section-label">CEO testimonials</p><h2 className="text-[34px] lg:text-[46px] font-extrabold tracking-tight text-[#0B1F3A]">Trusted at the table.</h2><p className="mt-3 text-slate-500">Global hiring partnerships built on confidence, quality, and results.</p></div><div className="flex gap-2">{testimonialGroups.map((_, index) => <button key={index} aria-label={`Show testimonial group ${index + 1}`} onClick={() => setTestimonialPage(index)} className={`h-2.5 rounded-full transition-all ${testimonialPage === index ? "w-9 bg-brand" : "w-2.5 bg-slate-200 hover:bg-blue-200"}`} />)}</div></div>
+          <div className="overflow-hidden"><div className="flex transition-transform duration-700 ease-out" style={{ transform: `translateX(-${testimonialPage * 100}%)` }}>{testimonialGroups.map((group, groupIndex) => <div key={groupIndex} className="w-full shrink-0 grid md:grid-cols-3 gap-5">{group.map((testimonial, index) => { const absoluteIndex = groupIndex * 3 + index; return <article key={testimonial[0]} className="motion-card relative flex min-h-[350px] flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-card-sm"><span className="text-[50px] leading-none text-brand/20">“</span><p className="-mt-3 text-[15px] leading-relaxed text-slate-600">{testimonial[3]}</p><div className="mt-auto pt-7 flex items-center gap-3"><img src={`/images/testimonials/ceo-${absoluteIndex + 1}.jpg`} alt={`Fictional portrait of ${testimonial[0]}`} className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100"/><div className="min-w-0"><p className="font-bold text-[#0B1F3A]">{testimonial[0]}</p><p className="text-[12px] text-slate-500">{testimonial[1]}</p></div><div className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EAF3FF] text-[11px] font-extrabold text-brand">{testimonial[4]}</div></div><p className="mt-3 border-t border-slate-100 pt-3 text-[12px] font-bold tracking-wide text-slate-500">{testimonial[2]}</p></article>})}</div>)}</div></div>
         </div>
       </section>
 

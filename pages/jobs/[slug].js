@@ -5,6 +5,12 @@ import { query } from "../../lib/db";
 import { decryptJobLink } from "../../lib/jobLink";
 import { sanitizeJobHtml } from "../../lib/sanitizeHtml";
 
+function RoleBadge({ label, value, variant }) {
+  const workStyle = value === "Remote" ? "bg-violet-50 text-violet-700 ring-violet-200" : value === "Hybrid" ? "bg-amber-50 text-amber-700 ring-amber-200" : "bg-cyan-50 text-cyan-700 ring-cyan-200";
+  const style = variant === "job" ? "bg-blue-50 text-brand ring-blue-200" : workStyle;
+  return <div className={`inline-flex items-center gap-2 rounded-full px-3.5 py-2 ring-1 ${style}`}><span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/80"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">{variant === "job" ? <><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a4 4 0 018 0v2M3 12h18" /></> : <><path d="M4 5h16v11H4z" /><path d="M8 20h8M12 16v4" /></>}</svg></span><span><span className="block text-[9px] font-bold uppercase tracking-[0.15em] opacity-70">{label}</span><span className="block text-[13px] font-extrabold leading-tight">{value}</span></span></div>;
+}
+
 export async function getServerSideProps({ params }) {
   const jobId = decryptJobLink(params.slug);
   if (!jobId) return { notFound: true };
@@ -34,16 +40,16 @@ export default function JobDetail({ job, detailToken }) {
             <Link href="/jobs" className="text-brand hover:underline">Jobs</Link> / {job.title}
           </p>
           <h1 className="text-3xl font-bold text-slate-900 mb-3">{job.title}</h1>
-          <div className="flex flex-wrap gap-4 text-sm text-slate-600 mb-6">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600 mb-6">
             <span>{job.employer_name}</span>
             <span>•</span>
             <span>{job.location}</span>
             <span>•</span>
-            <span className="text-brand font-medium">{job.job_type}</span>
+            <RoleBadge label="" value={job.job_type} variant="job" />
             {job.work_type && (
               <>
                 <span>•</span>
-                <span>{job.work_type}</span>
+                <RoleBadge label="" value={job.work_type} variant="work" />
               </>
             )}
           </div>
@@ -72,9 +78,9 @@ export default function JobDetail({ job, detailToken }) {
           <div className="text-sm text-slate-600 space-y-2">
             <p><span className="font-medium text-slate-800">Employer:</span> {job.employer_name}</p>
             <p><span className="font-medium text-slate-800">Location:</span> {job.location}</p>
-            <p><span className="font-medium text-slate-800">Job Type:</span> {job.job_type}</p>
+            <RoleBadge label="" value={job.job_type} variant="job" /> <br />
             {job.work_type && (
-              <p><span className="font-medium text-slate-800">Work Type:</span> {job.work_type}</p>
+              <RoleBadge label="" value={job.work_type} variant="work" />
             )}
             <p><span className="font-medium text-slate-800">Category:</span> {job.category_name}</p>
           </div>

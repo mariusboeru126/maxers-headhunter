@@ -15,7 +15,6 @@ export default function Signup() {
 
   const nextParam = Array.isArray(router.query.next) ? router.query.next[0] : router.query.next;
   const next = nextParam || "/";
-  const googleHref = `/api/auth/google/start?next=${encodeURIComponent(next)}`;
   const queryError = typeof router.query.error === "string" ? decodeURIComponent(router.query.error) : "";
 
   function update(field, value) {
@@ -68,7 +67,7 @@ export default function Signup() {
             </p>
           )}
 
-          <GoogleSignInButton href={googleHref} />
+          <GoogleSignInButton next={next} />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

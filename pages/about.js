@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -68,6 +69,32 @@ const mvv = [
       </svg>
     ),
   },
+];
+
+const coreValues = [
+  { title: "Excellence", desc: "High standards, measurable outcomes, and continuous improvement." },
+  { title: "Integrity", desc: "Transparent processes and ethical guidance for candidates and employers." },
+  { title: "Inclusion", desc: "Equitable access to opportunities and diverse talent pools." },
+  { title: "Partnership", desc: "Long-term relationships built on trust, results, and accountability." },
+];
+
+const excellencePillars = [
+  ["Service Quality at Scale", "Our standardized processes and SLAs ensure consistent experiences globally, backed by dedicated account managers and responsive candidate support."],
+  ["Technology-Driven Efficiency", "AI-powered matching, skills taxonomies, and workflow automation shorten hiring cycles while improving match accuracy."],
+  ["Human-Centered Approach", "Experienced recruiters and career advisors provide personalized guidance, context, and advocacy at every step."],
+  ["Data and Insights", "Real-time market data informs hiring strategies, compensation decisions, and workforce planning."],
+];
+
+const testimonials = [
+  ["Michael LaFramboise", "CEO & CoFounder", "Aurelius Systems", "Their executive search team understood the brief immediately and delivered exceptional leaders across two markets.", "AS"],
+  ["Svenja Falk", "Founder", "Bridget", "Maxers gave us fast access to quality candidates without compromising on fit or cultural alignment.", "NL"],
+  ["Denis Bicanic", "Chief Executive Officer", "Veridian Health", "A trusted global partner—precise, responsive, and consistently strong on international recruitment.", "VH"],
+  ["Shawn Heeren", "CEO", "Crestline Group", "The shortlist was thoughtful, diverse, and ready to move. Our hiring process became dramatically more focused.", "CG"],
+  ["Austin Weatherford", "Founder & CEO", "Atlas Ventures", "They bring the rigor of a top consulting firm and the care of a long-term business partner.", "AV"],
+  ["Grant Stenger", "CEO", "Kinetic Works", "Maxers helped us scale a specialist team quickly while keeping every candidate experience first-class.", "KW"],
+  ["Kate Johnson", "CEO", "Lumen Collective", "The market insight was as valuable as the hires. We now make workforce decisions with greater confidence.", "LC"],
+  ["Josh Stevens", "Chairman & CEO", "HarborPoint", "Professional, transparent, and deeply connected. They found talent we simply could not reach alone.", "HP"],
+  ["Maurice Brewster", "Co-Founder & CEO", "Mosaic Global", "From role design to onboarding, Maxers made our international expansion feel clear and manageable.", "MG"],
 ];
 
 const whatWeDoItems = [
@@ -207,6 +234,14 @@ function CultureIcon({ label }) {
 }
 
 export default function About() {
+  const [testimonialPage, setTestimonialPage] = useState(0);
+  const testimonialGroups = [testimonials.slice(0, 3), testimonials.slice(3, 6), testimonials.slice(6, 9)];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setTestimonialPage((page) => (page + 1) % testimonialGroups.length), 6500);
+    return () => window.clearInterval(timer);
+  }, [testimonialGroups.length]);
+
   return (
     <>
       <Navbar />
@@ -224,7 +259,7 @@ export default function About() {
                 We connect great people with great opportunities.
               </p>
               <p className="text-[14px] leading-relaxed text-slate-500 mb-4">
-                Maxers Head Hunter is a global talent enablement and workforce solutions
+                <strong>Maxers Head Hunter</strong> is a global talent enablement and workforce solutions
                 partner. We specialize in connecting qualified professionals with companies
                 across diverse industries, delivering consistent, high-quality service
                 anywhere in the world.
@@ -268,25 +303,82 @@ export default function About() {
         </div>
       </section>
 
-      {/* Mission, Vision, Values */}
-      <section className="bg-[#F5F7FA] py-16 lg:py-20 mt-8">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10 grid md:grid-cols-3 gap-6">
-          {mvv.map((item) => (
-            <div
-              key={item.title}
-                className="motion-card bg-white rounded-lg shadow-card-sm border border-slate-100 p-6 flex gap-4"
-            >
-              <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center shrink-0">
-                {item.icon}
+      {/* Values, Mission, Vision */}
+      <section className="mt-24 relative overflow-hidden bg-[#071D3D] py-20 lg:py-28">
+        <div className="pointer-events-none absolute -top-32 -right-32 h-[480px] w-[480px] rounded-full bg-brand/30 blur-[120px]" />
+        <div className="pointer-events-none absolute -bottom-48 left-[16%] h-[360px] w-[360px] rounded-full border border-white/10" />
+        <div className="relative max-w-[1280px] mx-auto px-6 lg:px-10 grid lg:grid-cols-[0.78fr_1.22fr] gap-14 lg:gap-24 items-start">
+          <div className="lg:sticky lg:top-28">
+            <p className="flex items-center gap-3 text-[11px] font-bold tracking-[0.22em] uppercase text-blue-300 mb-5">
+              <span className="h-px w-9 bg-blue-300" /> What guides us
+            </p>
+            <h2 className="text-[38px] sm:text-[46px] lg:text-[54px] font-extrabold tracking-tight leading-[1.04] text-white">
+              Values that make every connection matter.
+            </h2>
+            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-slate-300">
+              Our values are not a statement on a wall. They are the standard behind every conversation, search, and career move.
+            </p>
+
+            <div className="mt-12 space-y-8 border-l border-white/20 pl-6">
+              <div>
+                <p className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#9ec8ff]">Our Mission</p>
+                <p className="mt-2 text-[16px] leading-relaxed text-white">To connect talent with opportunity through reliable recruitment, training, and career support.</p>
               </div>
               <div>
-                <h3 className="font-bold text-[15px] text-[#0B1F3A] mb-2">{item.title}</h3>
-                <p className="text-[13px] leading-relaxed text-slate-500">{item.desc}</p>
+                <p className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#9ec8ff]">Our Vision</p>
+                <p className="mt-2 text-[16px] leading-relaxed text-white">To be a trusted global leader in people solutions and career development.</p>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="border-t border-white/20">
+            {coreValues.map((value, index) => (
+              <article key={value.title} className="group grid grid-cols-[3.5rem_1fr_auto] sm:grid-cols-[5rem_1fr_auto] gap-3 sm:gap-6 items-center border-b border-white/20 py-7 sm:py-9 transition-colors hover:border-blue-300">
+                <span className="text-[12px] sm:text-[14px] font-bold tracking-[0.14em] text-blue-300/80">0{index + 1}</span>
+                <div>
+                  <h3 className="text-[30px] sm:text-[42px] lg:text-[50px] font-extrabold tracking-tight leading-none text-white transition-transform duration-300 group-hover:translate-x-2 group-hover:text-blue-200">
+                    {value.title}
+                  </h3>
+                  <p className="mt-3 max-w-xl text-[14px] sm:text-[15px] leading-relaxed text-slate-300">{value.desc}</p>
+                </div>
+                <span className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-xl text-white transition-all duration-300 group-hover:border-blue-300 group-hover:bg-blue-300 group-hover:text-[#071D3D]">↗</span>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
+
+      <section className="bg-white py-20 lg:py-28 overflow-hidden">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          <div className="grid lg:grid-cols-[0.7fr_1.3fr] gap-12 lg:gap-20">
+            <div>
+              <p className="section-label mt-16">We deliver excellence</p>
+              <h2 className="text-[36px] lg:text-[48px] font-extrabold leading-[1.08] tracking-tight text-[#0B1F3A] mt-16">Built for quality.<br /><span className="text-brand">Designed to scale.</span></h2>
+            </div>
+            <div className="grid sm:grid-cols-2 border-l border-t border-slate-200">
+              {excellencePillars.map(([title, desc], index) => <article key={title} className="group border-r border-b border-slate-200 p-6 lg:p-8 hover:bg-[#f0f6ff] transition-colors"><span className="text-[12px] font-bold tracking-[0.18em] text-brand">0{index + 1}</span><h3 className="mt-6 text-[20px] font-extrabold text-[#0B1F3A] group-hover:text-brand">{title}</h3><p className="mt-3 text-[14px] leading-relaxed text-slate-500">{desc}</p></article>)}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#EAF3FF] py-20 lg:py-28">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          <p className="section-label">Wide range of clientele</p>
+          <div className="mt-7 grid lg:grid-cols-2 gap-px overflow-hidden rounded-2xl bg-blue-200 shadow-card">
+            <article className="bg-[#0B2D62] p-9 lg:p-12"><span className="text-[12px] font-bold tracking-[.2em] uppercase text-blue-200">For professionals</span><h2 className="mt-5 text-[34px] font-extrabold text-white">A career partner with reach.</h2><p className="mt-5 max-w-lg text-[16px] leading-relaxed text-blue-100">Early-career to executive-level candidates seeking local, remote, or hybrid opportunities with transparent guidance and continuous upskilling.</p></article>
+            <article className="bg-white p-9 lg:p-12"><span className="text-[12px] font-bold tracking-[.2em] uppercase text-brand">For companies</span><h2 className="mt-5 text-[34px] font-extrabold text-[#0B1F3A]">Talent for every turning point.</h2><p className="mt-5 max-w-lg text-[16px] leading-relaxed text-slate-600">Startups, SMEs, and enterprises needing reliable access to vetted talent for critical roles, rapid growth, or specialized projects.</p></article>
+          </div>
+          <div className="mt-14 grid lg:grid-cols-2 gap-8"><div className="border-t-2 border-brand pt-6"><p className="font-bold text-brand">Candidate services</p><p className="mt-3 text-[15px] leading-relaxed text-slate-600">Resume and LinkedIn optimization, portfolio review, interview preparation, skills assessments, mentorship, and job-search strategy.</p></div><div className="border-t-2 border-brand pt-6"><p className="font-bold text-brand">Employer services</p><p className="mt-3 text-[15px] leading-relaxed text-slate-600">Role design, sourcing, screening, shortlisting, interview coordination, reference checks, and onboarding support.</p></div></div>
+        </div>
+      </section>
+
+      {false && <section className="bg-white py-20 lg:py-28 overflow-hidden">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-10"><div><p className="section-label">CEO testimonials</p><h2 className="text-[34px] lg:text-[46px] font-extrabold tracking-tight text-[#0B1F3A]">Trusted at the table.</h2><p className="mt-3 text-slate-500">Global hiring partnerships built on confidence, quality, and results.</p></div><div className="flex gap-2">{testimonialGroups.map((_, index) => <button key={index} aria-label={`Show testimonial group ${index + 1}`} onClick={() => setTestimonialPage(index)} className={`h-2.5 rounded-full transition-all ${testimonialPage === index ? "w-9 bg-brand" : "w-2.5 bg-slate-200 hover:bg-blue-200"}`} />)}</div></div>
+          <div className="overflow-hidden"><div className="flex transition-transform duration-700 ease-out" style={{ transform: `translateX(-${testimonialPage * 100}%)` }}>{testimonialGroups.map((group, groupIndex) => <div key={groupIndex} className="w-full shrink-0 grid md:grid-cols-3 gap-5">{group.map((testimonial, index) => { const absoluteIndex = groupIndex * 3 + index; return <article key={testimonial[0]} className="motion-card relative flex min-h-[350px] flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-card-sm"><span className="text-[50px] leading-none text-brand/20">“</span><p className="-mt-3 text-[15px] leading-relaxed text-slate-600">{testimonial[3]}</p><div className="mt-auto pt-7 flex items-center gap-3"><img src={`/images/testimonials/ceo-${absoluteIndex + 1}.jpg`} alt={`Fictional portrait of ${testimonial[0]}`} className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100"/><div className="min-w-0"><p className="font-bold text-[#0B1F3A]">{testimonial[0]}</p><p className="text-[12px] text-slate-500">{testimonial[1]}</p></div><div className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EAF3FF] text-[11px] font-extrabold text-brand">{testimonial[4]}</div></div><p className="mt-3 border-t border-slate-100 pt-3 text-[12px] font-bold tracking-wide text-slate-500">{testimonial[2]}</p></article>})}</div>)}</div></div>
+        </div>
+      </section>}
 
       {/* What We Do */}
       <section className="bg-white py-20 lg:py-24">
@@ -394,7 +486,7 @@ export default function About() {
                   className="w-full object-cover rounded-lg
                   border border-slate-100 shadow-card-sm"
                 />
-                <p className="text-[13px] font-bold tracking-wide leading-relaxed text-slate-600 mt-4">
+                <p className="text-[13px] font-bold tracking-wide leading-relaxed text-slate-600 mt-8">
                   GENALYN B. DELA TORRE, M.A., J.D.
                 </p>
                 <p className="text-[12px] text-slate-500">
