@@ -13,6 +13,7 @@ function ArrowIcon() {
 export default function Navbar() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [unreadReplies, setUnreadReplies] = useState(0);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const avatarMenuRef = useRef(null);
@@ -23,6 +24,14 @@ export default function Navbar() {
       .then((data) => setUser(data.user))
       .catch(() => setUser(null));
   }, [router.pathname, router.isReady]);
+
+  useEffect(() => {
+    if (!user) { setUnreadReplies(0); return; }
+    fetch("/api/feedback")
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => setUnreadReplies(Number(data?.unreadCount || 0)))
+      .catch(() => setUnreadReplies(0));
+  }, [user, router.asPath]);
 
   useEffect(() => {
     setShowMobileMenu(false);
@@ -99,6 +108,17 @@ export default function Navbar() {
           )}
 
           {user && (
+            <Link
+              href="/users#feedback"
+              aria-label={unreadReplies ? `${unreadReplies} unread feedback replies` : "Feedback replies"}
+              className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:border-brand hover:bg-blue-50 hover:text-brand"
+            >
+              <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M18 8a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              {unreadReplies > 0 && <span className="absolute -right-1 -top-1 grid min-w-5 h-5 place-items-center rounded-full bg-red-600 px-1 text-[10px] font-extrabold text-white ring-2 ring-white">{unreadReplies > 9 ? "9+" : unreadReplies}</span>}
+            </Link>
+          )}
+
+          {user && (
             <div className="relative" ref={avatarMenuRef}>
               <button
                 type="button"
@@ -111,8 +131,8 @@ export default function Navbar() {
 
               {showAvatarMenu && (
                 <div className="absolute right-0 mt-2 w-44 bg-white border border-slate-200 rounded-xl shadow-lg text-left z-10 overflow-hidden">
-                  <Link href="/users" onClick={() => setShowAvatarMenu(false)} className="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50">
-                    My Applications
+                <Link href="/users" onClick={() => setShowAvatarMenu(false)} className="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50">
+                  My Applications
                   </Link>
                   <button
                     type="button"
@@ -158,6 +178,7 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link href="/users" className="mt-2 rounded-md px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">My Applications</Link>
+                <Link href="/users#feedback" className="rounded-md px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Feedback replies {unreadReplies > 0 ? `(${unreadReplies} new)` : ""}</Link>
                 <button
                   type="button"
                   onClick={handleLogout}
